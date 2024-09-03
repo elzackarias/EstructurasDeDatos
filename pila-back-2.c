@@ -30,7 +30,7 @@ char *TrimSpaces(char *str){
   return str;
 }
 
-void Push(char *stack, char data){
+void Push(int *stack, int data){
     if(TOP <= SIZE){
         stack[TOP] = data;
         TOP++;
@@ -38,32 +38,32 @@ void Push(char *stack, char data){
         printf("%s\n","La Pila esta llena, no se ingreso el dato");
     }
 }
-void Pop(char *stack){
+void Pop(int *stack){
     if(TOP > BASE){
         TOP--;
-        //printf("%s %d\n","El valor es: ",stack[TOP]);
+        printf("%s %d\n","El valor es: ",stack[TOP]);
     }else{
         printf("%s\n","Pila vacia");
     }
 }
 
-void TopData(char *stack){
+void TopData(int *stack){
     if(TOP==BASE){
         printf("%s\n","No hay datos");
     }else{
-        printf("%s %d","Dato del tope: ", stack[TOP-1]);
+        printf("%s %d\n","Dato del tope: ",stack[TOP-1]);
     }
 }
-int isStackEmpty(char *stack){
+int isStackEmpty(int *stack){
     if(TOP == BASE){
-        //printf("%s\n","La pila SI esta vacia");
+        printf("%s\n","La pila SI esta vacia");
         return 1;
     }else{
-        //printf("%s\n","La pila NO esta vacia");
+        printf("%s\n","La pila NO esta vacia");
         return 0;
     }
 }
-void WholeStack(char *stack){
+void WholeStack(int *stack){
     printf("%s","Pila: [ ");
     for(int i = 1; i < TOP; i++){
         printf("%d ",stack[i]);
@@ -71,7 +71,7 @@ void WholeStack(char *stack){
     printf("%s\n","]");
 }
 
-void checkParenthesis(char *expression, char *stack){
+void checkParenthesis(char *expression, int *stack){
    for(int i=0;i<strlen(expression);i++){
        switch(expression[i]){
            case '(':
@@ -88,53 +88,14 @@ void checkParenthesis(char *expression, char *stack){
        }
    } 
 }
-void infixToPostfix(char *stack){
-    Push(stack, '('); // Empujar '(' al stack
-    strcat(exp_infix, ")"); // Añadir ')' al final de la expresión infija
-    int i = 0;
+void infixToPostfix(){
     
-    while (exp_infix[i] != '\0') { // Iterar sobre la expresión infija
-        if (isdigit(exp_infix[i])) { // Si es un dígito, añadir al postfix
-            char num[2] = { exp_infix[i], '\0' }; // Convertir char a string
-            strcat(exp_postfix, num);
-        } else if (exp_infix[i] == '(') {
-            Push(stack, '('); // Empujar '(' al stack
-        } else if (strchr("^%*/+-", exp_infix[i])) { // Si es un operador
-            // Procesar operadores según la precedencia
-            while (!isStackEmpty(stack) && strchr("^%*/+-", stack[TOP - 1]) &&
-                   strchr("*/%^", exp_infix[i]) <= strchr("*/%^", stack[TOP - 1])) {
-                char op[2] = { stack[TOP - 1], '\0' }; // Convertir char a string
-                strcat(exp_postfix, op);
-                Pop(stack); // Desempujar el operador de la pila
-            }
-            Push(stack, exp_infix[i]); // Empujar el nuevo operador
-        } else if (exp_infix[i] == ')') {
-            // Desempujar hasta encontrar '('
-            while (!isStackEmpty(stack) && stack[TOP - 1] != '(') {
-                char op[2] = { stack[TOP - 1], '\0' }; // Convertir char a string
-                strcat(exp_postfix, op);
-                Pop(stack);
-            }
-            Pop(stack); // Desempujar '('
-        }
-        i++;
-    }
-    
-    // Desempujar cualquier operador restante en la pila
-    while (!isStackEmpty(stack)) {
-        char op[2] = { stack[TOP - 1], '\0' }; // Convertir char a string
-        strcat(exp_postfix, op);
-        Pop(stack);
-    }
-    
-    printf("%s\n", exp_postfix); // Imprimir la expresión postfija
 }
-
 int main(){
     printf("%s\n", "Ingrese Longitud de la Pila:");
     scanf("%d", &SIZE);
     TOP = BASE;
-    char *A = (char*)malloc(sizeof(char) * (SIZE + 1));
+    int *A = (int*)malloc(SIZE*SIZE*sizeof(int));
     
     do{
         printf("\n\n%s\n", "Operacion a realizar: ");
@@ -178,9 +139,7 @@ int main(){
             printf("%s","Ingrese la expresion: ");
             scanf("%s", exp_infix);
             printf("%s",exp_infix);
-            checkParenthesis(exp_infix,A);
-            printf("%s\n","============== INFIX TO POSTFIX ==============");
-            infixToPostfix(A);
+            //checkParenthesis(expression,A);
             option = 0;
             break;
         default:
